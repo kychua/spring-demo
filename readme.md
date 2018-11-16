@@ -1,6 +1,6 @@
 # Readme
 
-This project is a modification of ["How to Install Apache Tomcat 9 (on Windows, Mac OS X, Ubuntu) and Get Started with Java Servlet Programming"](http://www.ntu.edu.sg/home/ehchua/programming/howto/tomcat_howto.html) tutorial by Chua Hock-Chuan, to include use of Maven.
+This project is a modification of ["How to Install Apache Tomcat 9 (on Windows, Mac OS X, Ubuntu) and Get Started with Java Servlet Programming"](http://www.ntu.edu.sg/home/ehchua/programming/howto/tomcat_howto.html) tutorial by Chua Hock-Chuan, to include use of Maven, with additional code from other tutorials to include use of Spring framework.
 
 ## Setup
 1. Set up Java project using Maven
@@ -88,8 +88,21 @@ This project is a modification of ["How to Install Apache Tomcat 9 (on Windows, 
    * `src\main\webapp`: `index.html`, `querybook.html`
    * `src\main\webapp\WEB-INF`: `web.xml`
 
+### Using Spring/Spring Boot
+1. [Add relevant entries](https://spring.io/guides/gs/rest-service/) to `pom.xml`.
+   > If you get an error message `No plugin found for prefix 'spring-boot' in the current project and in the plugin groups`, try adding [these entries](https://stackoverflow.com/a/30857865).
+1. Add code that uses Spring, as per [Spring's tutorial](https://spring.io/guides/gs/rest-service/)
+   > The `SpringBootApplication` [must not be in the default package](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-structuring-your-code.html,). Instead, [move the application class](https://better-coding.com/solved-spring-boot-failed-to-read-candidate-component-class-caused-by-java-lang-classnotfoundexception-org-springframework-dao-dataaccessexception/) into a package, i.e. `src/main/java/hello/Application.java` is ok but not `src/main/java/Application.java`
+1. [Change the necessary files](https://www.mkyong.com/spring-boot/spring-boot-deploy-war-file-to-tomcat/) to support deploying to Tomcat via a `.war` file.
+   > Ignore the instructions for creating `application.properties` as [it is outdated](https://stackoverflow.com/a/48987109).
+1. Create `application.properties` in `src/main/resources` with `server.servlet.contextPath=/myapp` so that the [URL](https://stackoverflow.com/questions/24452072/how-do-i-choose-the-url-for-my-spring-boot-webapp/48987109#48987109) when deploying via spring-boot will be `localhost:8080/myapp/...` (same as deploying via Tomcat) instead of `localhost:8080/...`.
+
 ## Deploy
 
+* Using Spring
+  ```
+  mvn spring-boot:run
+  ```
 * Using maven's tomcat plugin:
   ```
   mvn tomcat7:deploy
@@ -110,3 +123,6 @@ This project is a modification of ["How to Install Apache Tomcat 9 (on Windows, 
 * Using SQL in Java code, JDBC: http://www.ntu.edu.sg/home/ehchua/programming/java/JDBC_Basic.html
 * Getting started with MySQL: http://www.ntu.edu.sg/home/ehchua/programming/sql/MySQL_HowTo.html
 * Deploying to Tomcat via Maven: https://www.mkyong.com/maven/how-to-deploy-maven-based-war-file-to-tomcat/
+* Using Spring Boot for a simple webapp: https://spring.io/guides/gs/rest-service/
+* Configuring Spring to deploy to Tomcat via `.war`: https://www.mkyong.com/spring-boot/spring-boot-deploy-war-file-to-tomcat/
+* Structuring code for Spring Boot: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-structuring-your-code.html
