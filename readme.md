@@ -55,6 +55,33 @@ This project is a modification of ["How to Install Apache Tomcat 9 (on Windows, 
 
 1. Set up server
    1. Install Tomcat
+   1. Create user account for deploying code to server: add user to tomcat/conf/tomcat-users.xml
+      ```xml
+	  <role rolename="manager-gui"/>
+	  <role rolename="manager-script"/>
+	  <user username="admin" password="password" roles="manager-gui,manager-script" />
+	  ```
+	1. Add server to maven/conf/settings.xml
+		```xml
+		<server>
+			<id>TomcatServer</id>
+			<username>admin</username>
+			<password>password</password>
+		</server>
+		```
+	1. Add server to `pom.xml` plugins.
+	    ```xml
+        <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+            <url>http://localhost:8080/manager/text</url>
+            <server>TomcatServer</server>
+            <path>/${project.build.finalName}</path>
+        </configuration>
+        </plugin>
+	    ```
 
 1. Add Java, HTML and XML code as per tutorial: http://www.ntu.edu.sg/home/ehchua/programming/howto/tomcat_howto.html (note that directory structure, SQL setup and Tomcat setup should be as per instructions above, not according to the tutorial). Files added:
    * `src\main\java`: `HelloServlet.java`, `QueryServlet.java`
@@ -63,6 +90,12 @@ This project is a modification of ["How to Install Apache Tomcat 9 (on Windows, 
 
 ## Deploy
 
+* Using maven's tomcat plugin:
+  ```
+  mvn tomcat7:deploy
+  mvn tomcat7:undeploy
+  mvn tomcat7:redeploy
+  ```
 * Using maven + tomcat
   1. Generate `.war` file (generated to `target` by default)
      ```
