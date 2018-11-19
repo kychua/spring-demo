@@ -34,10 +34,10 @@ public class BookController {
 	}
 
 	@GetMapping(path="/queryauthor")
-	public @ResponseBody Iterable<Book> getAvailableBooksByAuthor(@RequestParam String author) {
-		return bookRepository.findByAuthorAndQtyGreaterThan(author, 0);
+	public String getAvailableBooksByAuthor(@RequestParam String author, Model model) {
+		model.addAttribute("books", bookRepository.findByAuthorAndQtyGreaterThan(author, 0));
+		return "query-results";
 	}
-
 
 	@GetMapping(path="/sayhi")
 	public String sayHi(@RequestParam(value="name", defaultValue="World") String name, Model model) {
