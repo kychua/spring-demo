@@ -21,7 +21,7 @@ public class QueryServlet extends HttpServlet {  // JDK 1.6 and above only
          // Step 1: Allocate a database Connection object
          Class.forName("com.mysql.jdbc.Driver");  // Needed for JDK9/Tomcat9
          conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/ebookshop?useSSL=false&serverTimezone=UTC", "myuser", "xxxx"); // <== Check!
+            "jdbc:mysql://localhost:3306/ebookshop?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC", "myuser", "xxxx"); // <== Check!
             // database-URL(hostname, port, default database), username, password
  
          // Step 2: Allocate a Statement object within the Connection
