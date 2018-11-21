@@ -1,8 +1,10 @@
-package hello.ebookshop;
+package ebookshop.dao;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+
+import ebookshop.entity.Book;
 
 /*
  *  CrudRepository supports a number of standard queries e.g. findAll, findById, delete.
