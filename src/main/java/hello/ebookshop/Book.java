@@ -6,10 +6,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity // This tells Hibernate to make a table out of this class
-@Table(name="books")
+@Entity // for JPA, means this class can be mapped to a database table
+@Table(name="books") // name of table in database - omit if same as class name
 public class Book {
-    @Id
+    @Id // required for JPA entity
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
     private String title;
@@ -17,9 +17,7 @@ public class Book {
     private float price;
     private int qty;
 
-    public Book() {
-
-    }
+    public Book() {} // default constructor required by Hibernate
 
 	public Integer getId() {
 		return id;
