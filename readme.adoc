@@ -6,7 +6,7 @@ This project aims to develop a Java web application starting from the most basic
 
 
 . Set up Java project using Maven
-.. Generate project using Maven with archetype maven-archetype-webapp.
+.. Generate project using Maven with archetype `maven-archetype-webapp`.
 .. Add `java` folder to `src/main`. 
 * Java code are stored in `src/main/java`
 * HTML files are stored in `src/main/webapp`
@@ -101,15 +101,15 @@ server>
    * `src\main\webapp`: `index.html`, `querybook.html`
    * `src\main\webapp\WEB-INF`: `web.xml`
 
-. Add Spring/Spring Boot
-.. https://spring.io/guides/gs/rest-service/[Add relevant entries] to `pom.xml`.
+. Add Spring/Spring Boot as per https://spring.io/guides/gs/rest-service/[Spring's tutorial].
+.. Add relevant entries to `pom.xml`.
 > If you get an error message `No plugin found for prefix 'spring-boot' in the current project and in the plugin groups`, try adding https://stackoverflow.com/a/30857865[these entries].
-.. Add code that uses Spring, as per https://spring.io/guides/gs/rest-service/[Spring's tutorial]
+.. Add relevant code.
 > The `SpringBootApplication` https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-structuring-your-code.html[must not be in the default package]. Instead, https://better-coding.com/solved-spring-boot-failed-to-read-candidate-component-class-caused-by-java-lang-classnotfoundexception-org-springframework-dao-dataaccessexception/[move the application class] into a package, i.e. `src/main/java/hello/Application.java` is ok but not `src/main/java/Application.java`
 .. https://www.mkyong.com/spring-boot/spring-boot-deploy-war-file-to-tomcat/[Change the necessary files] to support deploying to Tomcat via a `.war` file.
 > Ignore the instructions for creating `application.properties` as https://stackoverflow.com/a/48987109[it is outdated].
 .. Create `application.properties` in `src/main/resources` with `server.servlet.contextPath=/myapp` so that the https://stackoverflow.com/questions/24452072/how-do-i-choose-the-url-for-my-spring-boot-webapp/48987109#48987109[URL] when deploying via spring-boot will be `localhost:8080/myapp/...` (same as deploying via Tomcat) instead of `localhost:8080/...`.
-.. Change code to use Spring/Spring Boot.
+.. Change existing code to use Spring/Spring Boot.
 
 == Using Spring/Spring Boot
 
@@ -147,26 +147,32 @@ For example, beans may be declared implicitly using stereotype annotations (one 
 
 ==== Dispatcher Servlet (Spring MVC)
 
-The dispatcher servlet serves as a front controller, processing all incoming requests and delegating tasks to special beans (like HandlerMapping, ViewResolver beans). 
+The dispatcher servlet serves as a front controller, processing all incoming requests and delegating tasks to special beans (like HandlerMapping, ViewResolver beans)footnote:[https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-servlet-special-bean-types]. 
 
 When the dispatcher servlet receives a request, it
 
-. Uses `HandlerMapping` to look for the appropriate handler (method) and interceptors (for pre- and post-processing). 
+. Uses `HandlerMapping` to look for the appropriate handler (e.g. method in a `@Controller` class, wrapped in `HandlerMethod` instance) and interceptors (for pre- and post-processing). 
 . Invokes the handler via `HandlerAdapter`'s `handle(HttpServletRequest, HttServletResponse, handler)` method. A `ModelAndView` object is returned. 
-   1. `handle()` invokes the handler, passing it the request and response as parameters. 
-   1. the handler executes the relevant logic and returns a `ModelAndView` object. 
-      > If interceptor handlers are used, pre-processing and post-processing are done before/after the handler processes the request. 
-. Processes the `ModelAndView` object, resolving the view if necessary. `View` can be a `String` view name to be resolved using a `ViewResolver`, or a `View` object. The model is a `Map` (keys and associated values). 
+.. `handle()` invokes the handler, passing it the request and response as parameters. 
++
+> If interceptor handlers are used, pre-processing and post-processing are done before/after the handler processes the request. 
+.. the handler executes the relevant logic and returns a `ModelAndView` object. 
++
+> Controller methods do not usually take in `HttpServletRequest` and `HttpServletResponse` as arguments, and do not necessarily return a `ModelAndView` instance. They can take in https://docs.spring.io/spring/docs/current/spring-framework-reference/[arguments] like `@RequestParam` or `Model`, and return `String` (representing a view name), `Model`, `@ResponseBody` and https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-return-types[more]. It is the `RequestMappingHandlerAdapter` that resolves the arguments from the `HttpServletRequest` and creates a `ModelAndView` object from the return value.
+. Processes the `ModelAndView` object, resolving the view if necessary and passing it the model data. `View` can be a `String` view name to be resolved using a `ViewResolver`, or a `View` object. The model is a `Map` (keys and associated values).
+. Returns output in response. 
 
-The actual method we write in controllers can take in arguments other than request/response. For instance, we can use `@RequestParam` or `Model`. A full list of permitted arguments can be found https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-arguments[here]. 
 
-Similarly, we need not return `ModelAndView` objects. We can return a `String` (representing a `View` name), a `Model`, a `@ResponseBody` (JSON instead of HTML output) and https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-return-types[more].
+For a more detailed explanation, see https://dzone.com/articles/how-spring-mvc-really-works[these] http://www.studytrails.com/frameworks/spring/spring-mvc/[articles].
 
 Read https://stackoverflow.com/a/45337829[this] to see how `@RequestMapping` works.
 
+References: footnote:[https://dzone.com/articles/how-spring-mvc-really-works] footnote:[https://stackoverflow.com/a/14015907] footnote:[https://stackoverflow.com/a/44380337]
+
+
 ==== Stereotype annotations
 
-Classes annotated with @Component are automatically detected by Spring during component scanning. Spring auto-configures and creates beans from these classes, with the bean name the same as the class name, except with the first letter in lowercase.footnote:[https://www.baeldung.com/spring-bean-annotations]
+Classes annotated with `@Component` are automatically detected by Spring during component scanning. Spring auto-configures and creates beans from these classes, with the bean name the same as the class name, except with the first letter in lowercase.footnote:[https://www.baeldung.com/spring-bean-annotations]
 
 @Repository, @Service and @Controller are meta-annotations of @Component, and are thus also detected during component scanning. These can be used to denote the roles of components within the application.
 
