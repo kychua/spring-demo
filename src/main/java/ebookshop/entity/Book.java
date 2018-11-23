@@ -19,6 +19,14 @@ public class Book {
 
     public Book() {} // default constructor required by Hibernate
 
+    public Book(Integer id, String title, String author, float price, int qty) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.qty = qty;
+    }
+
 	public Integer getId() {
 		return id;
 	}
