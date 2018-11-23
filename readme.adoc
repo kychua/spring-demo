@@ -35,7 +35,7 @@ use ebookshop;
 
 drop table if exists books;
 create table books (
-    id int,
+    id int NOT NULL AUTO_INCREMENT,
     title varchar(50),
     author varchar(50),
     price float,

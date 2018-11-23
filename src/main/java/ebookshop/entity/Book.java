@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Table(name="books") // name of table in database - omit if same as class name
 public class Book {
     @Id // required for JPA entity
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String author;
