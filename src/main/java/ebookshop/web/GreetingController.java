@@ -1,9 +1,12 @@
-package hello;
+package ebookshop.web;
 
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import ebookshop.domain.Greeting;
 
 // @RestController handles HTTP requests, returns domain object instead of view (HTML)
 // stands for @Controller + @ResponseBody
