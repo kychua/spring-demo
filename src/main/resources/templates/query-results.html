@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Query Response</title>
+</head>
+<body>
+<h3>Thank you for your query.</h3>
+<ul th:each="book: ${books}">
+	<li th:text="${book.title} + ' by ' + ${book.author} + ' at $' + ${book.price}"/>
+</ul>
+
+<p th:text="'==== ' + ${#arrays.length(books)} + ' record(s) found ===='"/>
+
+</body>
+</html>
