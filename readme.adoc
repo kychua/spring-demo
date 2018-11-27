@@ -12,6 +12,12 @@ This project aims to develop a Java web application starting from the most basic
 * HTML files are stored in `src/main/webapp`
 * `web.xml` stores mappings from url patterns to Java servlets.
 * Configuration settings are stored in `pom.xml`.
+. Set up Maven wrapper with command
++
+[source]
+----
+mvn -N io.takari:maven:wrapper
+----
 
 . Set up database
 .. Install MySQL using installer (take note of root password)
