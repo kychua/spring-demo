@@ -72,7 +72,8 @@ create database if not exists ebookshop_test;
   <version>8.0.13</version>
 </dependency>
 ----
-. Set up server
+
+. Set up server (optional, for traditional `.war` deployment)
 .. Install Tomcat
 .. Create user account for deploying code to server: add user to tomcat/conf/tomcat-users.xml
 +
@@ -107,6 +108,19 @@ server>
 </configuration>
 </plugin>
 ----
+
+. Add Docker as per https://springbootdev.com/2018/01/08/docker-spring-boot-and-spring-data-jpa-mysql-rest-api-example-with-docker-with-docker-compose/[tutorial]
+.. Set `<packaging>` to `jar` in `pom.xml`.
++
+[source, xml]
+----
+<packaging>jar</packaging>
+----
+.. Add Docker dependencies to `pom.xml`.
+.. Add `Dockerfile`.
+.. Add `docker-compose.yml`.
+.. Add `application-docker.properties` to configure database used in Docker.
+.. Add `.dockerignore` to prevent docker build from hanging. (See https://github.com/docker/toolbox/issues/613#issuecomment-320380241[this] for more info)
 
 . Add Java, HTML and XML code as per http://www.ntu.edu.sg/home/ehchua/programming/howto/tomcat_howto.html[tutorial] (note that directory structure, SQL setup and Tomcat setup should be as per instructions above, not according to the tutorial). Files added:
    * `src\main\java`: `HelloServlet.java`, `QueryServlet.java`
