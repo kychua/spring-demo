@@ -50,4 +50,9 @@ public class BookService {
 		return bookRepository.findByAuthorAndQtyGreaterThan(author, 0);
 	}
 
+	public void removeCopy(Book book) {
+		book.setQty(book.getQty() - 1);
+		bookRepository.save(book);
+	}
+
 }
