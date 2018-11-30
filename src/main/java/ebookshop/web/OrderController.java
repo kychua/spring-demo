@@ -2,6 +2,8 @@ package ebookshop.web;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ import ebookshop.service.OrderService;
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
+
+	private final Logger log = LoggerFactory.getLogger(OrderController.class);
+
 	@Autowired
 	private OrderRepository orderRepository;
 
@@ -48,6 +53,7 @@ public class OrderController {
 	// ------------------------------------------------------------------------------
 	@PostMapping
 	public ResponseEntity<?> addOrder(@RequestParam int bookId, @RequestParam int customerId) {
+		log.info("Request to place order: book " + bookId + ", customer " + customerId);
 		try {
 			boolean hasOrdered = orderService.placeOrder(bookId, customerId);
 			if (!hasOrdered) {
