@@ -3,6 +3,7 @@ package ebookshop.web;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ebookshop.dao.BookRepository;
-import ebookshop.dao.CustomerRepository;
 import ebookshop.dao.OrderRepository;
-import ebookshop.entity.Book;
-import ebookshop.entity.Customer;
 import ebookshop.entity.Order;
+import ebookshop.service.OrderService;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -26,10 +24,7 @@ public class OrderController {
 	private OrderRepository orderRepository;
 
 	@Autowired
-	private CustomerRepository customerRepository;
-
-	@Autowired
-	private BookRepository bookRepository;
+	private OrderService orderService;
 
 	// READ
 	// ------------------------------------------------------------------------------
@@ -43,21 +38,27 @@ public class OrderController {
 
 	// @PathVariable to handle dynamic id
 	@GetMapping(path="/{id}")
-	public Optional<Order> getOrder(@PathVariable int id) {
-		return orderRepository.findById(id);
+	public ResponseEntity<?> getOrder(@PathVariable int id) {
+		Optional<Order> order = orderRepository.findById(id);
+		return order.map(response -> ResponseEntity.ok().body(response))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	// CREATE
 	// ------------------------------------------------------------------------------
 	@PostMapping
 	public ResponseEntity<?> addOrder(@RequestParam int bookId, @RequestParam int customerId) {
-		Customer customer = customerRepository.findById(customerId).get();
-		Book book = bookRepository.findById(bookId).get();
-		Order order = new Order(null, book, customer);
-		orderRepository.save(order);
-		return ResponseEntity.ok().build();
+		try {
+			boolean hasOrdered = orderService.placeOrder(bookId, customerId);
+			if (!hasOrdered) {
+				return ResponseEntity.badRequest().body("No available copies for book " + bookId);
+			} else {
+				return ResponseEntity.ok().build();
+			}
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body("Invalid book " + bookId + " or invalid customer " + customerId);
+		}
 	}
-
 
 	// DELETE
 	// ------------------------------------------------------------------------------
