@@ -137,6 +137,8 @@ server>
 .. Create `application.properties` in `src/main/resources` with `server.servlet.contextPath=/myapp` so that the https://stackoverflow.com/questions/24452072/how-do-i-choose-the-url-for-my-spring-boot-webapp/48987109#48987109[URL] when deploying via spring-boot will be `localhost:8080/myapp/...` (same as deploying via Tomcat) instead of `localhost:8080/...`.
 .. Change existing code to use Spring/Spring Boot.
 
+. https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api[Add Swagger] to document APIs
+
 == Using Spring/Spring Boot
 
 === Why use Spring
