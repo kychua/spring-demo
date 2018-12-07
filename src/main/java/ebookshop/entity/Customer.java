@@ -8,8 +8,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="customers")
-public class Customer {
-    @Id // required for JPA entity
+public class Customer extends AbstractAuditingEntity {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id // required for JPA entity
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String name;

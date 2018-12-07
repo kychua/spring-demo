@@ -13,8 +13,11 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name="orders")
-public class Order {
-    @Id
+public class Order extends AbstractAuditingEntity {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
