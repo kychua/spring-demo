@@ -12,6 +12,12 @@ This project aims to develop a Java web application starting from the most basic
 * HTML files are stored in `src/main/webapp`
 * `web.xml` stores mappings from url patterns to Java servlets.
 * Configuration settings are stored in `pom.xml`.
+. Set up Maven wrapper with command
++
+[source]
+----
+mvn -N io.takari:maven:wrapper
+----
 
 . Set up database
 .. Install MySQL using installer (take note of root password)
@@ -35,7 +41,7 @@ use ebookshop;
 
 drop table if exists books;
 create table books (
-    id int,
+    id int NOT NULL AUTO_INCREMENT,
     title varchar(50),
     author varchar(50),
     price float,
@@ -50,6 +56,12 @@ insert into books values (1005, 'A Teaspoon of Java', 'Kevin Jones', 55.55, 55);
 
 select * from books;
 ----
+.. Create a test database.
++
+[source, sql]
+----
+create database if not exists ebookshop_test;
+----
 .. Add SQL to `pom.xml`'s dependencies.
 +
 [source, xml]
@@ -60,7 +72,8 @@ select * from books;
   <version>8.0.13</version>
 </dependency>
 ----
-. Set up server
+
+. Set up server (optional, for traditional `.war` deployment)
 .. Install Tomcat
 .. Create user account for deploying code to server: add user to tomcat/conf/tomcat-users.xml
 +
@@ -96,6 +109,19 @@ server>
 </plugin>
 ----
 
+. Add Docker as per https://springbootdev.com/2018/01/08/docker-spring-boot-and-spring-data-jpa-mysql-rest-api-example-with-docker-with-docker-compose/[tutorial]
+.. Set `<packaging>` to `jar` in `pom.xml`.
++
+[source, xml]
+----
+<packaging>jar</packaging>
+----
+.. Add Docker dependencies to `pom.xml`.
+.. Add `Dockerfile`.
+.. Add `docker-compose.yml`.
+.. Add `application-docker.properties` to configure database used in Docker.
+.. Add `.dockerignore` to prevent docker build from hanging. (See https://github.com/docker/toolbox/issues/613#issuecomment-320380241[this] for more info)
+
 . Add Java, HTML and XML code as per http://www.ntu.edu.sg/home/ehchua/programming/howto/tomcat_howto.html[tutorial] (note that directory structure, SQL setup and Tomcat setup should be as per instructions above, not according to the tutorial). Files added:
    * `src\main\java`: `HelloServlet.java`, `QueryServlet.java`
    * `src\main\webapp`: `index.html`, `querybook.html`
@@ -110,6 +136,17 @@ server>
 > Ignore the instructions for creating `application.properties` as https://stackoverflow.com/a/48987109[it is outdated].
 .. Create `application.properties` in `src/main/resources` with `server.servlet.contextPath=/myapp` so that the https://stackoverflow.com/questions/24452072/how-do-i-choose-the-url-for-my-spring-boot-webapp/48987109#48987109[URL] when deploying via spring-boot will be `localhost:8080/myapp/...` (same as deploying via Tomcat) instead of `localhost:8080/...`.
 .. Change existing code to use Spring/Spring Boot.
+
+. https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api[Add Swagger] to document APIs
+
+. https://rashidi.github.io/spring-boot-data-audit/[Add Spring Data JPA Auditing]. Spring Data Jpa's auditing feature allows you to automatically record when an entity was created or last modified, and by whom.
+.. Create an abstract auditing entity class. Other entity classes will extend this class to enable auditing.
+...  Add `@MappedSuperclass` to the `AbstractAuditingEntity`, to denote inheritance structure for the database tables, where we are sharing properties/methods/associations among https://stackoverflow.com/a/9669719[unrelated entities]. See: https://thoughts-on-java.org/complete-guide-inheritance-strategies-jpa-hibernate[other ways] of implementing inheritance in JPA.
+... Add an entity listener, https://github.com/spring-projects/spring-data-jpa/blob/master/src/main/java/org/springframework/data/jpa/domain/support/AuditingEntityListener.java[`AuditingEntityListener`] provided by Spring that handles the recording of changes.
+... Add audit fields `@CreatedBy`, `@LastModifiedBy`, `@CreatedDate`, `@LastModifiedDate` (with getters and setters) to record changes.
+.. Make all entity classes extend `AbstractAuditingEntity`.
+.. Add `AuditorAwareImpl` to inform Spring of the current user making changes. This can be replaced with the current user when Spring Security is used.
+.. Add `AuditConfiguration` to tell Spring Data to use our own `AuditorAware` implementation.
 
 == Using Spring/Spring Boot
 

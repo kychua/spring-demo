@@ -8,9 +8,12 @@ import javax.persistence.Table;
 
 @Entity // for JPA, means this class can be mapped to a database table
 @Table(name="books") // name of table in database - omit if same as class name
-public class Book {
-    @Id // required for JPA entity
-    @GeneratedValue(strategy=GenerationType.AUTO)
+public class Book extends AbstractAuditingEntity {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id // required for JPA entity
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String author;
@@ -18,6 +21,14 @@ public class Book {
     private int qty;
 
     public Book() {} // default constructor required by Hibernate
+
+    public Book(Integer id, String title, String author, float price, int qty) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.qty = qty;
+    }
 
 	public Integer getId() {
 		return id;

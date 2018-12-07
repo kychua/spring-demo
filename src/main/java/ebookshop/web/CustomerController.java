@@ -16,59 +16,56 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ebookshop.entity.Book;
-import ebookshop.service.BookService;
+import ebookshop.dao.CustomerRepository;
+import ebookshop.entity.Customer;
 
 @RestController
-@RequestMapping("/api/books")
-public class BookController {
+@RequestMapping("/api/customers")
+public class CustomerController {
 	@Autowired
-	private BookService bookService;
+	private CustomerRepository customerRepository;
 
 	// READ
 	// ------------------------------------------------------------------------------
 	@GetMapping
-	public Iterable<Book> getAllBooks() {
+	public Iterable<Customer> getAllCustomers() {
 		// @ResponseBody means the returned object forms the body of the HTTP response
 		// HTTP response does not support a Java object, so it is converted to JSON/XML automatically
 		// Thus we get the results in JSON/XML format in the HTTP response
-		return bookService.getAllBooks();
+		return customerRepository.findAll();
 	}
 
 	// @PathVariable to handle dynamic id
 	@GetMapping(path="/{id}")
-	public Optional<Book> getBook(@PathVariable int id) {
-		return bookService.getBook(id);
+	public Optional<Customer> getCustomer(@PathVariable int id) {
+		return customerRepository.findById(id);
 	}
 
 	// CREATE
 	// ------------------------------------------------------------------------------
 	@PostMapping
-	public ResponseEntity<?> addBook(@ModelAttribute Book book) {
-		bookService.createBook(book);
+	public ResponseEntity<?> addCustomer(@ModelAttribute Customer customer) {
+		customerRepository.save(customer);
 		return ResponseEntity.ok().build();
 	}
 
 	// UPDATE
 	// ------------------------------------------------------------------------------
 	@PutMapping("/{id}")
-	public Book updateBook(@PathVariable int id, @Valid @RequestBody Book bookDetails) {
-		return bookService.updateBook(id, bookDetails);
+	public Customer updateCustomer(@PathVariable int id, @Valid @RequestBody Customer customerDetails) {
+		Customer customer = customerRepository.findById(id).get();
+		customer.setName(customerDetails.getName());
+		customer.setEmail(customerDetails.getEmail());
+		customerRepository.save(customer);
+		return customer;
 	}
 
 	// DELETE
 	// ------------------------------------------------------------------------------
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> removeBook(@PathVariable int id) {
-		bookService.deleteBook(id);
+	public ResponseEntity<?> removeCustomer(@PathVariable int id) {
+		customerRepository.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
-
-
-//	@GetMapping(path="/sayhi")
-//	public String sayHi(@RequestParam(value="name", defaultValue="World") String name, Model model) {
-//		model.addAttribute("name", name); // else we get null instead of World when no name is supplied
-//		return "say-hi"; // returned String is a view name (say-hi.html populated with values in model)
-//	}
 
 }
